@@ -2,27 +2,27 @@ import os
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandler, ContextTypes
 
-# --- الإعدادات (تأكد من إضافتها في Railway لاحقاً) ---
+# --- الإعدادات (تأكد من إضافتها كـ Environment Variables في Railway) ---
 TOKEN = os.environ.get("PAYMENT_BOT_TOKEN") 
-ADMIN_USERNAME = "@YourUsername" # <--- استبدله بيوزرك في تليجرام عشان يكلمونك
+ADMIN_USERNAME = "@MXULT" # تم تثبيت يوزرك مباشرة لسهولة التواصل
 
-# نص معلومات الدفع (عدله باللي يناسبك)
+# نص معلومات الدفع (يمكنك تعديل الأرقام لاحقاً في Railway إذا أردت)
 PAYMENT_INFO = (
     "💳 **معلومات الدفع والاستلام:**\n\n"
-    "تقدر تحول عن طريق:\n"
+    "تقدر تحول عن طريق الوسائل المتاحة حالياً:\n"
     "• STC Pay: [رقمك هنا]\n"
     "• PayPal: [إيميلك هنا]\n"
     "• Binance (USDT): [رابط محفظتك]\n\n"
-    "⚠️ **ملاحظة:** بعد التحويل، صور الشاشة (الإيصال) وأرسلها للمطور مع رقم الآي دي (ID) حقك لتفعيل الاشتراك فوراً: " + ADMIN_USERNAME
+    "⚠️ **ملاحظة هامة:** بعد التحويل، صور الشاشة (إيصال الدفع) وأرسلها للمطور فوراً مع رقم الآي دي (ID) حقك لتفعيل حسابك VIP: " + ADMIN_USERNAME
 )
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    # ترتيب الأزرار بشكل نظيف
+    # ترتيب الأزرار الجديد: إضافة باقة الشهر وحذف الأبدي
     keyboard = [
+        [InlineKeyboardButton("💎 اشتراك شهر واحد (اقتصادي) = 2$", callback_data='sub_2')],
         [InlineKeyboardButton("💎 اشتراك 3 أشهر = 5$", callback_data='sub_5')],
         [InlineKeyboardButton("💎 اشتراك 6 أشهر = 7$", callback_data='sub_7')],
         [InlineKeyboardButton("💎 سنة كاملة = 12$", callback_data='sub_12')],
-        [InlineKeyboardButton("👑 اشتراك أبدي = 25$", callback_data='sub_25')],
         [InlineKeyboardButton("────────────────", callback_data='none')],
         [InlineKeyboardButton("🎁 1$", callback_data='don_1'), InlineKeyboardButton("🎁 5$", callback_data='don_5')],
         [InlineKeyboardButton("🎁 10$", callback_data='don_10'), InlineKeyboardButton("🎁 50$", callback_data='don_50')],
@@ -31,10 +31,10 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     reply_markup = InlineKeyboardMarkup(keyboard)
     
     welcome_text = (
-        "👑 **قائمة الاشتراكات والدعم**\n\n"
-        "لو عجبك الشغل وتحب تدعمني تقدر :) من هنا بكل سهولة من غير الاشتراك نفسه، "
-        "علشان نتطور ونضيف مميزات أكثر بالمستقبل وشكراً بالنهاية.\n\n"
-        "👇 اختر الباقة أو مبلغ الدعم:"
+        "👑 **قائمة الاشتراكات والدعم لشبكة MX**\n\n"
+        "لو عجبك الشغل وتحب تدعم المشروع لتطوير الخوادم وإضافة ميزات جديدة مستقبلاً، "
+        "تقدر تختار باقة الاشتراك المناسبة لك أو تدعمنا بمبلغ مباشر مجرد تبرع ودعم لي.\n\n"
+        "👇 اختر الباقة أو مبلغ الدعم المالي:"
     )
     
     if update.message:
@@ -52,10 +52,12 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await start(update, context)
         return
 
-    # عرض معلومات الدفع عند الضغط على أي باقة
+    # تنسيق النص النهائي المكتوب تحت معلومات الدفع ليظهر بشكل احترافي
+    label = data.replace('sub_', 'باقة اشتراك بقيمة ').replace('don_', 'دعم مالي وتبرع بقيمة ') + "$"
+    
     await query.edit_message_text(
-        text=f"{PAYMENT_INFO}\n\n*اختيارك:* {data.replace('sub_', 'اشتراك ').replace('don_', 'تبرع ')}$",
-        reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("🔙 عودة للقائمة", callback_data='back')]]),
+        text=f"{PAYMENT_INFO}\n\n✨ *اختيارك الحالي:* {label}",
+        reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("🔙 عودة للقائمة الرئيسية", callback_data='back')]]),
         parse_mode="Markdown"
     )
 
@@ -66,4 +68,4 @@ if __name__ == '__main__':
     
     print("بوت الدفع شغال.. بانتظار الملايين! 🚀")
     app.run_polling()
-  
+    
