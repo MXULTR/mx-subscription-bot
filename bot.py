@@ -3,32 +3,32 @@ from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandler, ContextTypes
 
 # --- الإعدادات ---
-# تأكد من وضع التوكن في Variables في Railway باسم PAYMENT_BOT_TOKEN
 TOKEN = os.environ.get("PAYMENT_BOT_TOKEN") 
 ADMIN_USERNAME = "@MXULT" 
 
-# رسالة معلومات الدفع (تعديل رقم الحساب هنا)
+# رسالة معلومات الدفع الموحدة
 PAYMENT_INFO = (
     "💳 **معلومات الدفع:**\n\n"
     "• مصرف الراجحي: `539000010006085862568`\n\n"
     "💬 **ملاحظة:** إذا كنت تفضل طريقة دفع أخرى (STC Pay، محفظة رقمية، إلخ)، لا تتردد بالتواصل معي مباشرة في أي وقت: " + ADMIN_USERNAME + "\n\n"
-    "⚠️ **بعد التحويل:** أرسل صورة الإيصال مع رقم الـ ID الخاص بك للمطور لتفعيل اشتراكك فوراً."
+    "⚠️ **بعد التحويل:** أرسل صورة الإيصال مع رقم الـ ID الخاص بك للمطور لتفعيل طلبك فوراً."
 )
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    # الأزرار المختصرة والمباشرة
+    # إضافة خيار التبرع للقائمة
     keyboard = [
-        [InlineKeyboardButton("💎 شهر واحد (اقتصادي) = 2$", callback_data='sub')],
+        [InlineKeyboardButton("💎 شهر واحد = 2$", callback_data='sub')],
         [InlineKeyboardButton("💎 3 أشهر = 5$", callback_data='sub')],
         [InlineKeyboardButton("💎 6 أشهر = 7$", callback_data='sub')],
-        [InlineKeyboardButton("💎 سنة كاملة = 12$", callback_data='sub')]
+        [InlineKeyboardButton("💎 سنة كاملة = 12$", callback_data='sub')],
+        [InlineKeyboardButton("🎁 دعم المشروع (تبرع حر)", callback_data='sub')]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     
     welcome_text = (
-        "👑 **قائمة الاشتراكات - شبكة MX**\n\n"
-        "شكراً لثقتك ودعمك للمشروع! اختر الباقة المناسبة لك لبدء التحميل بدون حدود.\n\n"
-        "👇 اختر الباقة:"
+        "👑 **قائمة خدمات شبكة MX**\n\n"
+        "شكراً لثقتك ودعمك! اختر الباقة المناسبة أو خيار التبرع لدعم استمرار المشروع.\n\n"
+        "👇 اختر ما يناسبك:"
     )
     
     if update.message:
@@ -44,7 +44,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await start(update, context)
         return
 
-    # عند الضغط على أي باقة، تظهر معلومات الدفع مباشرة
+    # عرض نفس معلومات الدفع للجميع
     await query.edit_message_text(
         text=f"{PAYMENT_INFO}",
         reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("🔙 عودة للقائمة الرئيسية", callback_data='back')]]),
@@ -52,13 +52,10 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
 
 if __name__ == '__main__':
-    # بناء التطبيق
     app = ApplicationBuilder().token(TOKEN).build()
-    
-    # إضافة الأوامر
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CallbackQueryHandler(button_handler))
     
-    print("البوت يعمل الآن ومستعد لاستقبال المشتركين.. 🚀")
+    print("البوت يعمل الآن مع خيار التبرع.. 🚀")
     app.run_polling()
     
