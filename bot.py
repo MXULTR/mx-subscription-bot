@@ -4,7 +4,7 @@ from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandle
 
 # --- الإعدادات ---
 TOKEN = os.environ.get("PAYMENT_BOT_TOKEN") 
-ADMIN_USERNAME = "@MXULT" 
+ADMIN_USERNAME = "@MX23I" 
 
 # رسالة معلومات الدفع الموحدة
 PAYMENT_INFO = (
