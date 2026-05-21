@@ -1,0 +1,7 @@
+async def send_and_delete(update: Update, text: str, delay=0):
+    # إرسال الرسالة
+    msg = await update.message.reply_text(text)
+    # الانتظار (إذا كنت تريد بقاءها لثوانٍ) أو الحذف الفوري
+    await asyncio.sleep(delay)
+    # حذف الرسالة من البوت والمستخدم
+    await msg.delete()
