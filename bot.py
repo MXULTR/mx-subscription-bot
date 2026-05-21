@@ -5,7 +5,7 @@ from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandle
 # --- الإعدادات ---
 # تأكد من إضافة TOKEN الخاص ببوت الدفع في Railway
 TOKEN = os.environ.get("PAYMENT_BOT_TOKEN") 
-ADMIN_USERNAME = "@MXULT" 
+ADMIN_USERNAME = "@MX23" 
 
 # النص النهائي المعتمد
 PAYMENT_INFO = (
